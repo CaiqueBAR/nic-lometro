@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nicolômetro 💕</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="hearts-bg" aria-hidden="true"></div>
+
+  <main class="card">
+    <div class="title-wrap">
+      <span class="heart-deco">💖</span>
+      <h1>Nicolômetro</h1>
+      <span class="heart-deco">💖</span>
+    </div>
+    <p class="subtitle">como a Nicoly tá hoje? 🌸</p>
+
+    <div class="mood-display">
+      <div class="emoji" id="emoji">💗</div>
+      <div class="level-label" id="levelLabel">—</div>
+      <div class="level-number"><span id="levelNumber">–</span><span class="of">/10</span></div>
+    </div>
+
+    <div class="bar-wrapper">
+      <div class="bar" id="bar"></div>
+    </div>
+
+    <section class="controls" id="controls">
+      <p class="controls-title">meu amor, ajusta aí 💕</p>
+      <input type="range" min="1" max="10" value="5" id="slider" />
+      <div class="slider-ticks">
+        <span>1</span><span>5</span><span>10</span>
+      </div>
+      <button id="saveBtn">Salvar humor 💗</button>
+      <p class="saved-msg" id="savedMsg"></p>
+    </section>
+
+    <p class="updated" id="updated"></p>
+    <p class="footer-love">feito com 💘 pro meu amor</p>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>
