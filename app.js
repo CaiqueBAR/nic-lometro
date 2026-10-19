@@ -18,7 +18,7 @@ const LEVELS = [
   { emoji: "🙂", label: "De boa" },
   { emoji: "😊", label: "Bem 💕" },
   { emoji: "😄", label: "Felizzinha 💖" },
-  { emoji: "🥰", label: " UMA TATALUUGUINHA💘" },
+  { emoji: "🥰", label: " UMA TATALUUGUINHA🐢" },
   { emoji: "🤩", label: "MUITOOOOOOOOOOOOOOOOOOOO FELIZ 💞" }
 ];
 
