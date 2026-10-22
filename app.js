@@ -159,3 +159,38 @@ raivaBtn.addEventListener("click", async () => {
 soninhoBtn.addEventListener("click", async () => {
   await saveMood({ level: Number(slider.value), status: "soninho" });
 });
+
+// ── Contador regressivo ──
+// Quando esta data chegar, o site vira uma tela preta com um ponto.
+// Pra destravar, é só mudar o ano/dia aqui. (mês é 0-indexado: 10 = novembro)
+const COUNTDOWN_TARGET = new Date(2026, 10, 1, 0, 0, 0, 0);
+
+const countdownValue = document.getElementById("countdownValue");
+const blackoutEl = document.getElementById("blackout");
+
+function blackout() {
+  document.body.classList.add("blacked-out");
+  blackoutEl.hidden = false;
+}
+
+function tick() {
+  const diff = COUNTDOWN_TARGET - new Date();
+
+  if (diff <= 0) {
+    blackout();
+    clearInterval(timer);
+    return;
+  }
+
+  const totalSeconds = Math.floor(diff / 1000);
+  const d = Math.floor(totalSeconds / 86400);
+  const h = Math.floor((totalSeconds % 86400) / 3600);
+  const m = Math.floor((totalSeconds % 3600) / 60);
+  const s = totalSeconds % 60;
+  const pad = (n) => String(n).padStart(2, "0");
+
+  countdownValue.textContent = `${d}d ${pad(h)}h ${pad(m)}m ${pad(s)}s`;
+}
+
+tick();
+const timer = setInterval(tick, 1000);
