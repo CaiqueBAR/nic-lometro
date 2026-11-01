@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
-  getDatabase, ref, onValue, set, get
+  getDatabase, ref, onValue, update, get
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 import { firebaseConfig } from "./firebase-config.js";
@@ -132,13 +132,13 @@ slider.addEventListener("input", (e) => {
   applyStatus(null);
 });
 
+// update (e não set) pra não apagar o seenAt que vive no mesmo nó
 async function saveMood({ level, status }) {
-  const payload = {
+  await update(moodRef, {
     level: level ?? Number(slider.value),
     status: status ?? null,
     updatedAt: Date.now()
-  };
-  await set(moodRef, payload);
+  });
 }
 
 saveBtn.addEventListener("click", async () => {
@@ -170,8 +170,7 @@ totoBtn.addEventListener("click", async () => {
 
 // ── "Visto" estilo WhatsApp ──
 // Ao abrir, guarda o horário da visita ANTERIOR e grava a atual.
-// Assim o botão mostra quando o Nicolômetro foi aberto da última vez.
-const seenRef = ref(db, "seen");
+// Fica dentro do nó mood pra aproveitar a permissão que já existe.
 const seenBtn = document.getElementById("seenBtn");
 const seenPill = document.getElementById("seenPill");
 
@@ -181,9 +180,9 @@ let seenFailed = false;
 
 (async () => {
   try {
-    const snap = await get(seenRef);
-    previousSeen = snap.val()?.at ?? null;
-    await set(seenRef, { at: Date.now() });
+    const snap = await get(moodRef);
+    previousSeen = snap.val()?.seenAt ?? null;
+    await update(moodRef, { seenAt: Date.now() });
   } catch {
     seenFailed = true;
   } finally {
