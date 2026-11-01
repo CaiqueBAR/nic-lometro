@@ -73,6 +73,103 @@ body {
   100% { transform: translateY(100vh) rotate(-8deg); }
 }
 
+/* ── Botõezinhos nos cantos ── */
+.corner-btn {
+  position: fixed;
+  top: clamp(8px, 2vw, 16px);
+  z-index: 6;
+  width: auto;
+  min-height: 0;
+  padding: 7px 13px;
+  font-size: clamp(0.66rem, 2.6vw, 0.76rem);
+  font-weight: 700;
+  border-radius: 999px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0.9;
+}
+.corner-btn:hover { opacity: 1; transform: translateY(-1px); }
+
+.toto-btn {
+  left: clamp(8px, 2vw, 16px);
+  background: linear-gradient(170deg, #b08358 0%, #8a6440 55%, #6b4a2c 100%);
+  text-shadow: 0 1px 2px rgba(50, 30, 10, 0.4);
+  box-shadow:
+    0 4px 14px rgba(107, 74, 44, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    inset 0 -2px 5px rgba(60, 38, 18, 0.35);
+}
+.toto-btn:hover {
+  box-shadow:
+    0 7px 20px rgba(107, 74, 44, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -2px 5px rgba(60, 38, 18, 0.35);
+}
+
+.seen-wrap {
+  position: fixed;
+  top: clamp(8px, 2vw, 16px);
+  right: clamp(8px, 2vw, 16px);
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.seen-btn {
+  position: static;
+  padding: 7px 11px;
+  font-size: 0.85rem;
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 141, 183, 0.45);
+  box-shadow:
+    0 2px 10px rgba(255, 77, 141, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+  text-shadow: none;
+}
+.seen-btn:hover {
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow:
+    0 4px 14px rgba(255, 77, 141, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.seen-pill {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 141, 183, 0.4);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 3px 12px rgba(255, 77, 141, 0.2);
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #c23a6a;
+  white-space: nowrap;
+  animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.seen-pill[hidden] { display: none; }
+
+/* ── Display Totoooo ── */
+.toto-char {
+  font-size: clamp(3.5rem, 16vw, 6rem);
+  line-height: 1.15;
+  animation: totoWobble 1.6s ease-in-out infinite;
+  filter: drop-shadow(0 8px 18px rgba(107, 74, 44, 0.45));
+}
+@keyframes totoWobble {
+  0%, 100% { transform: rotate(-6deg) scale(1); }
+  50%      { transform: rotate(6deg) scale(1.08); }
+}
+.toto-display .status-label {
+  font-family: "Dancing Script", cursive;
+  font-size: clamp(1.3rem, 5.5vw, 1.9rem);
+  color: #7a5533;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.6);
+  letter-spacing: 0;
+}
+
 .card {
   position: relative;
   z-index: 1;

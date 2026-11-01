@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
-  getDatabase, ref, onValue, set
+  getDatabase, ref, onValue, set, get
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 import { firebaseConfig } from "./firebase-config.js";
@@ -34,8 +34,10 @@ const updatedEl = document.getElementById("updated");
 const normalDisplay = document.getElementById("normalDisplay");
 const raivaDisplay = document.getElementById("raivaDisplay");
 const soninhoDisplay = document.getElementById("soninhoDisplay");
+const totoDisplay = document.getElementById("totoDisplay");
 const raivaBtn = document.getElementById("raivaBtn");
 const soninhoBtn = document.getElementById("soninhoBtn");
+const totoBtn = document.getElementById("totoBtn");
 const tickNow = document.getElementById("tickNow");
 
 // bolha com o número atual acompanha o pegador do slider
@@ -85,11 +87,13 @@ function applyStatus(status) {
   const next = status || null;
   const isRaiva = next === "raiva";
   const isSoninho = next === "soninho";
-  const isNormal = !isRaiva && !isSoninho;
+  const isToto = next === "toto";
+  const isNormal = !isRaiva && !isSoninho && !isToto;
 
   normalDisplay.hidden = !isNormal;
   raivaDisplay.hidden = !isRaiva;
   soninhoDisplay.hidden = !isSoninho;
+  totoDisplay.hidden = !isToto;
   // no modo raiva/soninho a barra some e o personagem ocupa o espaço
   document.body.classList.toggle("status-mode", !isNormal);
 
@@ -158,5 +162,66 @@ raivaBtn.addEventListener("click", async () => {
 
 soninhoBtn.addEventListener("click", async () => {
   await saveMood({ level: Number(slider.value), status: "soninho" });
+});
+
+totoBtn.addEventListener("click", async () => {
+  await saveMood({ level: Number(slider.value), status: "toto" });
+});
+
+// ── "Visto" estilo WhatsApp ──
+// Ao abrir, guarda o horário da visita ANTERIOR e grava a atual.
+// Assim o botão mostra quando o Nicolômetro foi aberto da última vez.
+const seenRef = ref(db, "seen");
+const seenBtn = document.getElementById("seenBtn");
+const seenPill = document.getElementById("seenPill");
+
+let previousSeen = null;
+let seenReady = false;
+let seenFailed = false;
+
+(async () => {
+  try {
+    const snap = await get(seenRef);
+    previousSeen = snap.val()?.at ?? null;
+    await set(seenRef, { at: Date.now() });
+  } catch {
+    seenFailed = true;
+  } finally {
+    seenReady = true;
+  }
+})();
+
+function relativeTime(ts) {
+  const minutes = Math.floor((Date.now() - ts) / 60000);
+  if (minutes < 1) return "visto agora mesmo";
+  if (minutes < 60) return `visto há ${minutes} min`;
+
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `visto há ${hours}h`;
+
+  const days = Math.floor(hours / 24);
+  if (days === 1) return "visto ontem";
+  return `visto há ${days} dias`;
+}
+
+function seenText() {
+  if (!seenReady) return "carregando...";
+  if (seenFailed) return "não consegui ver 😕";
+  if (!previousSeen) return "primeira visita 💗";
+  return relativeTime(previousSeen);
+}
+
+let seenTimeout;
+
+seenBtn.addEventListener("click", () => {
+  if (!seenPill.hidden) {
+    seenPill.hidden = true;
+    clearTimeout(seenTimeout);
+    return;
+  }
+  seenPill.textContent = seenText();
+  seenPill.hidden = false;
+  clearTimeout(seenTimeout);
+  seenTimeout = setTimeout(() => (seenPill.hidden = true), 4000);
 });
 

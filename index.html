@@ -16,6 +16,15 @@
 <body>
   <div class="hearts-bg" aria-hidden="true"></div>
 
+  <!-- Botão de emoção no canto superior esquerdo -->
+  <button class="corner-btn toto-btn" id="totoBtn">💩 Totoooo</button>
+
+  <!-- "Visto" no canto superior direito -->
+  <div class="seen-wrap">
+    <button class="corner-btn seen-btn" id="seenBtn" aria-label="Última visualização">👀</button>
+    <div class="seen-pill" id="seenPill" hidden></div>
+  </div>
+
   <main class="card">
     <div class="title-wrap">
       <span class="heart-deco">💖</span>
@@ -45,6 +54,12 @@
         <img src="tristeza.png" alt="Tristeza" class="tristeza-img" />
       </div>
       <div class="status-label"></div>
+    </div>
+
+    <!-- Display TOTOOOO -->
+    <div class="status-display toto-display" id="totoDisplay" hidden>
+      <div class="toto-char">💩</div>
+      <div class="status-label">Totoooo</div>
     </div>
 
     <div class="bar-wrapper">
