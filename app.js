@@ -1,6 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import {
-  getDatabase, ref, onValue, update, get
+  getDatabase, ref, onValue, update
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 import { firebaseConfig } from "./firebase-config.js";
@@ -117,6 +117,8 @@ onValue(moodRef, (snap) => {
   slider.value = data.level ?? 5;
   applyStatus(data.status || null);
   updatedEl.textContent = formatTime(data.updatedAt);
+  seenAt = data.seenAt ?? null;
+  renderSeen();
 });
 
 slider.addEventListener("input", (e) => {
@@ -168,59 +170,50 @@ totoBtn.addEventListener("click", async () => {
   await saveMood({ level: Number(slider.value), status: "toto" });
 });
 
-// ── "Visto" estilo WhatsApp ──
-// Ao abrir, guarda o horário da visita ANTERIOR e grava a atual.
-// Fica dentro do nó mood pra aproveitar a permissão que já existe.
+// ── "Visto" manual ──
+// O contador fica sempre à vista e sobe sozinho. Apertar o botão
+// zera pra "visto agora". seenAt vive dentro do nó mood.
 const seenBtn = document.getElementById("seenBtn");
 const seenPill = document.getElementById("seenPill");
 
-let previousSeen = null;
-let seenReady = false;
-let seenFailed = false;
-
-(async () => {
-  try {
-    const snap = await get(moodRef);
-    previousSeen = snap.val()?.seenAt ?? null;
-    await update(moodRef, { seenAt: Date.now() });
-  } catch {
-    seenFailed = true;
-  } finally {
-    seenReady = true;
-  }
-})();
+let seenAt = null;
 
 function relativeTime(ts) {
   const minutes = Math.floor((Date.now() - ts) / 60000);
-  if (minutes < 1) return "visto agora mesmo";
+  if (minutes < 1) return "visto agora";
+  if (minutes === 1) return "visto há 1 min";
   if (minutes < 60) return `visto há ${minutes} min`;
 
   const hours = Math.floor(minutes / 60);
-  if (hours < 24) return `visto há ${hours}h`;
+  if (hours === 1) return "visto há 1 hora";
+  if (hours < 24) return `visto há ${hours} horas`;
 
   const days = Math.floor(hours / 24);
-  if (days === 1) return "visto ontem";
+  if (days === 1) return "visto há 1 dia";
   return `visto há ${days} dias`;
 }
 
-function seenText() {
-  if (!seenReady) return "carregando...";
-  if (seenFailed) return "não consegui ver 😕";
-  if (!previousSeen) return "primeira visita 💗";
-  return relativeTime(previousSeen);
+function renderSeen() {
+  seenPill.textContent = seenAt ? relativeTime(seenAt) : "nunca visto";
 }
 
-let seenTimeout;
-
-seenBtn.addEventListener("click", () => {
-  if (!seenPill.hidden) {
-    seenPill.hidden = true;
-    clearTimeout(seenTimeout);
-    return;
+seenBtn.addEventListener("click", async () => {
+  seenBtn.disabled = true;
+  try {
+    const now = Date.now();
+    await update(moodRef, { seenAt: now });
+    seenAt = now;
+    renderSeen();
+    seenPill.classList.remove("just-seen");
+    void seenPill.offsetWidth; // reinicia a animação
+    seenPill.classList.add("just-seen");
+  } catch {
+    seenPill.textContent = "não deu pra salvar";
+  } finally {
+    seenBtn.disabled = false;
   }
-  seenPill.textContent = seenText();
-  seenPill.hidden = false;
-  clearTimeout(seenTimeout);
-  seenTimeout = setTimeout(() => (seenPill.hidden = true), 4000);
 });
+
+renderSeen();
+setInterval(renderSeen, 1000);
 
