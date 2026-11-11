@@ -35,9 +35,11 @@ const normalDisplay = document.getElementById("normalDisplay");
 const raivaDisplay = document.getElementById("raivaDisplay");
 const soninhoDisplay = document.getElementById("soninhoDisplay");
 const totoDisplay = document.getElementById("totoDisplay");
+const fominhaDisplay = document.getElementById("fominhaDisplay");
 const raivaBtn = document.getElementById("raivaBtn");
 const soninhoBtn = document.getElementById("soninhoBtn");
 const totoBtn = document.getElementById("totoBtn");
+const fominhaBtn = document.getElementById("fominhaBtn");
 const tickNow = document.getElementById("tickNow");
 
 // bolha com o número atual acompanha o pegador do slider
@@ -88,12 +90,14 @@ function applyStatus(status) {
   const isRaiva = next === "raiva";
   const isSoninho = next === "soninho";
   const isToto = next === "toto";
-  const isNormal = !isRaiva && !isSoninho && !isToto;
+  const isFominha = next === "fominha";
+  const isNormal = !isRaiva && !isSoninho && !isToto && !isFominha;
 
   normalDisplay.hidden = !isNormal;
   raivaDisplay.hidden = !isRaiva;
   soninhoDisplay.hidden = !isSoninho;
   totoDisplay.hidden = !isToto;
+  fominhaDisplay.hidden = !isFominha;
   // no modo raiva/soninho a barra some e o personagem ocupa o espaço
   document.body.classList.toggle("status-mode", !isNormal);
 
@@ -168,6 +172,10 @@ soninhoBtn.addEventListener("click", async () => {
 
 totoBtn.addEventListener("click", async () => {
   await saveMood({ level: Number(slider.value), status: "toto" });
+});
+
+fominhaBtn.addEventListener("click", async () => {
+  await saveMood({ level: Number(slider.value), status: "fominha" });
 });
 
 // ── "Visto" manual ──
